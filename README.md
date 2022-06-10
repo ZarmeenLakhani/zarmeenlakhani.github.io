@@ -1,6 +1,5 @@
-# zarmeenlakhani.github.io
-Latest Portfolio
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>                                  My Application for  Notion Community Intern</title><style>
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>                 Zarmeen Lakhani </title><style>
 /* cspell:disable-file */
 /* webkit printing magic: print all background colors */
 html {
