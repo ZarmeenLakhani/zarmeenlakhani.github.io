@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zarmeen Lakhani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #000000;
+      --surface: #0c0c0c;
+      --border: #222222;
+      --border-soft: #181818;
+      --text: #f0ece3;
+      --text-sub: #b8b0a0;
+      --muted: #666666;
+      --gold: #c9a84c;
+      --gold-bright: #e0bb65;
+      --gold-dim: rgba(201,168,76,0.08);
+      --gold-glow: rgba(201,168,76,0.15);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      --lora: 'Lora', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 400;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    .glow-blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .glow-blob-1 { width: 600px; height: 600px; background: var(--gold); top: -200px; right: -150px; opacity: 0.04; }
+    .glow-blob-2 { width: 400px; height: 400px; background: var(--gold); bottom: 5%; left: -100px; opacity: 0.03; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 20px 52px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    nav.scrolled { background: rgba(0,0,0,0.96); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: 0.04em; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; position: relative; z-index: 1; }
+    .hero-photo-col { position: relative; overflow: hidden; }
+    .hero-photo-col img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: grayscale(20%) contrast(1.05) brightness(0.78); transition: transform 8s ease; }
+    .hero-photo-col:hover img { transform: scale(1.03); }
+    .hero-photo-col::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 40%, #000 100%), linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%); }
+    .photo-caption { position: absolute; bottom: 28px; left: 28px; z-index: 2; font-family: var(--lora); font-style: italic; font-size: 13px; color: rgba(240,236,227,0.32); opacity: 0; animation: fadeIn 1.5s 1.2s forwards; }
+
+    .hero-text-col { display: flex; flex-direction: column; justify-content: flex-end; padding: 80px 56px 80px 52px; position: relative; z-index: 1; opacity: 0; animation: fadeUp 1s 0.4s forwards; }
+
+    .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+
+    .hero-name { font-family: var(--serif); font-size: clamp(60px, 7vw, 100px); font-weight: 300; line-height: 0.88; letter-spacing: -0.01em; color: var(--text); margin-bottom: 6px; }
+    .hero-name-last { font-family: var(--serif); font-size: clamp(60px, 7vw, 100px); font-style: italic; font-weight: 300; line-height: 0.88; color: var(--gold); display: block; margin-bottom: 36px; text-shadow: 0 0 60px rgba(201,168,76,0.28); }
+
+    .hero-bio { font-family: var(--lora); font-size: 15px; font-style: italic; color: var(--text-sub); line-height: 1.8; margin-bottom: 40px; max-width: 380px; border-left: 2px solid var(--gold); padding-left: 20px; }
+
+    .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 36px; }
+    .stat { background: #000; padding: 18px 16px; transition: background 0.2s; }
+    .stat:hover { background: var(--surface); }
+    .stat-num { font-family: var(--serif); font-size: 30px; font-weight: 400; color: var(--gold); display: block; line-height: 1; text-shadow: 0 0 20px var(--gold-glow); }
+    .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-top: 6px; }
+
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; cursor: pointer; border: none; }
+    .btn-primary { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(201,168,76,0.2); }
+    .btn-primary:hover { background: var(--gold-bright); box-shadow: 0 0 36px rgba(201,168,76,0.35); transform: translateY(-2px); }
+    .btn-ghost { border: 1px solid rgba(201,168,76,0.35); color: var(--gold); background: transparent; }
+    .btn-ghost:hover { border-color: var(--gold); background: var(--gold-dim); transform: translateY(-2px); }
+
+    .gold-line { height: 1px; position: relative; z-index: 1; background: linear-gradient(to right, transparent, rgba(201,168,76,0.35), transparent); }
+
+    /* MARQUEE */
+    .intro-strip { border-bottom: 1px solid var(--border); padding: 16px 0; background: #060606; overflow: hidden; position: relative; z-index: 1; }
+    .intro-strip-track { display: flex; white-space: nowrap; animation: marquee 38s linear infinite; }
+    .intro-strip-text { font-family: var(--lora); font-size: 13px; font-style: italic; color: rgba(240,236,227,0.25); padding-right: 48px; flex-shrink: 0; }
+    .intro-strip-text .sep { color: var(--gold); opacity: 0.4; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* SECTIONS */
+    section { padding: 100px 52px; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 48px; display: flex; align-items: center; gap: 16px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(201,168,76,0.25), transparent); }
+
+    .section-title { font-family: var(--serif); font-size: clamp(38px, 5vw, 62px); font-weight: 300; line-height: 1.08; color: var(--text); margin-bottom: 16px; }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .section-intro { font-family: var(--lora); font-size: 15px; font-style: italic; color: var(--text-sub); max-width: 480px; line-height: 1.8; margin-bottom: 56px; }
+
+    /* EXPERIENCE */
+    .experience-grid { display: grid; grid-template-columns: 260px 1fr; }
+
+    .exp-meta { padding: 36px 36px 36px 0; border-top: 1px solid var(--border-soft); }
+    .exp-identity { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .exp-logo { width: 38px; height: 38px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--gold); }
+    .exp-company { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--gold); line-height: 1.2; text-shadow: 0 0 20px var(--gold-glow); }
+    .exp-location { font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0.03em; line-height: 1.6; }
+
+    .exp-content { padding: 36px 0 36px 44px; border-top: 1px solid var(--border-soft); border-left: 1px solid var(--border); }
+    .exp-role { margin-bottom: 28px; }
+    .exp-role + .exp-role { padding-top: 24px; border-top: 1px dashed var(--border); }
+    .role-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .role-period { font-size: 11px; font-weight: 500; color: var(--gold); opacity: 0.7; letter-spacing: 0.05em; margin-bottom: 14px; display: block; }
+    .role-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .role-bullets li { color: var(--text-sub); padding-left: 20px; position: relative; font-size: 13px; font-weight: 400; line-height: 1.7; }
+    .role-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--gold); opacity: 0.4; }
+    .role-bullets a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.2); }
+    .role-bullets a:hover { border-bottom-color: var(--gold); }
+
+    /* PROOF */
+    .proof-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .proof-card { background: #000; padding: 40px; position: relative; overflow: hidden; transition: background 0.3s; }
+    .proof-card:hover { background: #080808; }
+    .proof-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, var(--gold), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.45s; }
+    .proof-card:hover::before { transform: scaleX(1); }
+    .proof-number { font-family: var(--serif); font-size: 56px; font-weight: 300; color: var(--border); line-height: 1; margin-bottom: 16px; transition: color 0.3s; }
+    .proof-card:hover .proof-number { color: rgba(201,168,76,0.07); }
+    .proof-metric { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--gold); margin-bottom: 12px; line-height: 1.2; }
+    .proof-desc { font-family: var(--lora); font-size: 14px; font-style: italic; color: var(--text-sub); line-height: 1.7; }
+    .proof-company { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--border-soft); }
+
+    /* ARTIFACTS */
+    .artifacts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .artifact-card { background: #000; padding: 36px; position: relative; overflow: hidden; text-decoration: none; display: flex; flex-direction: column; transition: background 0.3s; }
+    .artifact-card:hover { background: #080808; }
+    .artifact-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, var(--gold), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+    .artifact-card:hover::after { transform: scaleX(1); }
+    .artifact-source { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; opacity: 0.75; display: flex; align-items: center; gap: 8px; }
+    .artifact-source-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    .artifact-title { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--text); line-height: 1.35; margin-bottom: 12px; flex: 1; transition: color 0.2s; }
+    .artifact-card:hover .artifact-title { color: var(--gold); }
+    .artifact-desc { font-family: var(--lora); font-style: italic; font-size: 13px; color: var(--text-sub); line-height: 1.65; margin-bottom: 22px; }
+    .artifact-link { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .artifact-card:hover .artifact-link { color: var(--gold); }
+    .artifact-link-arrow { transition: transform 0.2s; }
+    .artifact-card:hover .artifact-link-arrow { transform: translate(3px, -3px); }
+    .artifact-add { background: #000; padding: 36px; border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; transition: border-color 0.3s, background 0.3s; cursor: default; }
+    .artifact-add:hover { border-color: rgba(201,168,76,0.25); background: var(--gold-dim); }
+    .artifact-add-icon { font-size: 26px; color: var(--border); }
+    .artifact-add-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* SKILLS */
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .skill-group { background: #000; padding: 32px; }
+    .skill-group-title { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tag { font-size: 12px; font-weight: 400; padding: 6px 14px; border: 1px solid var(--border); color: var(--text-sub); letter-spacing: 0.02em; transition: all 0.2s; cursor: default; }
+    .skill-tag:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    /* TEACHING */
+    .other-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .other-card { border: 1px solid var(--border); padding: 30px; transition: border-color 0.3s, background 0.3s; position: relative; overflow: hidden; }
+    .other-card::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: var(--gold); transform: scaleY(0); transform-origin: top; transition: transform 0.3s; }
+    .other-card:hover { border-color: rgba(201,168,76,0.25); background: var(--gold-dim); }
+    .other-card:hover::before { transform: scaleY(1); }
+    .other-org { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--text); margin-bottom: 6px; }
+    .other-role { font-size: 11px; font-weight: 500; color: var(--gold); opacity: 0.8; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .other-desc { font-family: var(--lora); font-style: italic; font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+
+    /* EDUCATION */
+    .education-block { border: 1px solid var(--border); padding: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; }
+    .edu-school { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--gold); margin-bottom: 10px; }
+    .edu-degree { font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+    .edu-period { font-size: 11px; font-weight: 500; color: var(--gold); opacity: 0.65; letter-spacing: 0.08em; }
+    .edu-achievements { display: flex; flex-direction: column; gap: 16px; }
+    .edu-achievement { display: flex; gap: 12px; align-items: flex-start; font-family: var(--lora); font-style: italic; font-size: 14px; color: var(--text-sub); line-height: 1.6; }
+    .edu-achievement::before { content: '✦'; color: var(--gold); font-size: 9px; flex-shrink: 0; margin-top: 4px; font-style: normal; }
+
+    /* CONTACT */
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: start; }
+    .contact-left { padding-right: 60px; border-right: 1px solid var(--border); }
+    .contact-right { padding-left: 60px; }
+    .contact-note { font-family: var(--lora); font-size: 15px; font-style: italic; color: var(--text-sub); line-height: 1.8; margin-top: 24px; max-width: 360px; }
+    .contact-links { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+    .contact-link { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: #000; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 400; transition: all 0.2s; }
+    .contact-link:hover { background: var(--gold-dim); color: var(--gold); box-shadow: inset 2px 0 0 var(--gold); }
+    .contact-link-arrow { color: var(--muted); transition: color 0.2s; font-size: 16px; }
+    .contact-link:hover .contact-link-arrow { color: var(--gold); }
+
+    /* FOOTER */
+    footer { padding: 28px 52px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 12px; font-weight: 400; position: relative; z-index: 1; }
+    .footer-quote { font-family: var(--lora); font-style: italic; font-size: 13px; color: rgba(201,168,76,0.22); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      nav { padding: 18px 24px; }
+      .nav-links { gap: 20px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-photo-col { height: 55vh; }
+      .hero-text-col { padding: 40px 24px 60px; }
+      section { padding: 72px 24px; }
+      .experience-grid { grid-template-columns: 1fr; }
+      .exp-content { border-left: none; padding-left: 0; }
+      .skills-grid, .proof-grid, .artifacts-grid { grid-template-columns: 1fr; }
+      .other-grid { grid-template-columns: 1fr; }
+      .education-block { grid-template-columns: 1fr; gap: 32px; padding: 32px; }
+      .contact-wrapper { grid-template-columns: 1fr; }
+      .contact-left { padding-right: 0; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 48px; }
+      .contact-right { padding-left: 0; padding-top: 48px; }
+      footer { flex-direction: column; gap: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-blob glow-blob-1"></div>
+  <div class="glow-blob glow-blob-2"></div>
+
+  <nav id="nav">
+    <a href="#" class="nav-logo">Zarmeen<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#proof">Proof of Work</a></li>
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-photo-col">
+      <img src="photo.png" alt="Zarmeen Lakhani" />
+      <p class="photo-caption">Somewhere with good water &amp; good thinking.</p>
+    </div>
+    <div class="hero-text-col">
+      <p class="hero-eyebrow">Revenue Ops · Data · Strategy · Global</p>
+      <h1 class="hero-name">Zarmeen</h1>
+      <span class="hero-name-last">Lakhani</span>
+      <p class="hero-bio">3 years of global experience in operations, revenue optimization, and data-backed strategy. From Karachi to London to Atlanta — building systems that scale and teams that thrive.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">$3.47M</span><span class="stat-label">ARR Growth</span></div>
+        <div class="stat"><span class="stat-num">450+</span><span class="stat-label">Women in tech</span></div>
+        <div class="stat"><span class="stat-num">&lt;1%</span><span class="stat-label">VC fellowship</span></div>
+      </div>
+      <div class="hero-cta">
+        <a href="mailto:zarmeenlakhani.io@gmail.com" class="btn btn-primary">Get in touch</a>
+        <a href="https://www.linkedin.com/in/zarmeen-lakhani/" target="_blank" class="btn btn-ghost">LinkedIn ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="gold-line"></div>
+
+  <!-- MARQUEE -->
+  <div class="intro-strip">
+    <div class="intro-strip-track">
+      <span class="intro-strip-text">Revenue Operations <span class="sep">·</span> Data Strategy <span class="sep">·</span> Go-To-Market <span class="sep">·</span> Venture Capital <span class="sep">·</span> Python <span class="sep">·</span> SQL <span class="sep">·</span> Team Building <span class="sep">·</span> Karachi · London · Atlanta <span class="sep">·</span> Teaching &amp; Giving Back <span class="sep">·</span>&nbsp;</span>
+      <span class="intro-strip-text">Revenue Operations <span class="sep">·</span> Data Strategy <span class="sep">·</span> Go-To-Market <span class="sep">·</span> Venture Capital <span class="sep">·</span> Python <span class="sep">·</span> SQL <span class="sep">·</span> Team Building <span class="sep">·</span> Karachi · London · Atlanta <span class="sep">·</span> Teaching &amp; Giving Back <span class="sep">·</span>&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label reveal">Experience</div>
+    <h2 class="section-title reveal">Where I've<br /><em>made impact.</em></h2>
+    <p class="section-intro reveal">A career built across three continents, four companies, and one consistent thread — finding the lever that moves the number.</p>
+
+    <div class="experience-grid">
+
+      <div class="exp-meta reveal">
+        <div class="exp-identity">
+          <div class="exp-logo"><svg viewBox="0 0 40 40" width="22" height="22" fill="none"><path d="M8 30 L20 10 L32 30 Z" stroke="#c9a84c" stroke-width="2" fill="none"/><circle cx="20" cy="10" r="3" fill="#c9a84c"/></svg></div>
+          <div class="exp-company">AutoLeap</div>
+        </div>
+        <div class="exp-location">Atlanta, US · Sep 2022 – Present</div>
+      </div>
+      <div class="exp-content reveal">
+        <div class="exp-role">
+          <div class="role-title">Senior Revenue Operations & CxOps Analyst</div>
+          <span class="role-period">June 2025 – Present</span>
+          <ul class="role-bullets">
+            <li>Spearheading end-to-end GTM, implementation, and retention of <a href="https://autoleap.com/air/" target="_blank">AI-powered receptionist</a> for SMB and Enterprise clients.</li>
+          </ul>
+        </div>
+        <div class="exp-role">
+          <div class="role-title">Revenue Operations Analyst</div>
+          <span class="role-period">March 2024 – June 2025</span>
+          <ul class="role-bullets">
+            <li>Built a complete Upsell engine from scratch — grew ARR from $53K to $3.47M YTD.</li>
+            <li>Managed a team of 10 Account Managers and launched multiple cross-functional campaigns.</li>
+          </ul>
+        </div>
+        <div class="exp-role">
+          <div class="role-title">Data Specialist II</div>
+          <span class="role-period">July 2023 – March 2024</span>
+          <ul class="role-bullets">
+            <li>Built a lead-scoring model on segmentation variables, improving sit rate by 30%.</li>
+          </ul>
+        </div>
+        <div class="exp-role">
+          <div class="role-title">Data Specialist</div>
+          <span class="role-period">Sep 2022 – May 2023</span>
+          <ul class="role-bullets">
+            <li>Migrated 2,000+ customers via Python & SQL pipeline, cutting runtime by 25% — holding churn to 1.5% MoM.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-meta reveal">
+        <div class="exp-identity">
+          <div class="exp-logo"><svg viewBox="0 0 40 40" width="20" height="20" fill="none"><circle cx="20" cy="20" r="13" stroke="#c9a84c" stroke-width="1.5"/><path d="M14 20 L20 14 L26 20 L20 26 Z" stroke="#c9a84c" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="exp-company">Included VC</div>
+        </div>
+        <div class="exp-location">London, UK · 2023</div>
+      </div>
+      <div class="exp-content reveal">
+        <div class="exp-role">
+          <div class="role-title">Global VC Fellow</div>
+          <span class="role-period">July – Nov 2023</span>
+          <ul class="role-bullets">
+            <li>Inducted into a global fellowship with &lt;1% acceptance rate — focused on early-stage startups and VC.</li>
+            <li>Analyzed 60+ decks, authored 7 investment theses, and participated in 7+ investment committees across HealthTech, SaaS, FinTech, IoT, and Mobility.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-meta reveal">
+        <div class="exp-identity">
+          <div class="exp-logo"><svg viewBox="0 0 40 40" width="20" height="20" fill="none"><rect x="8" y="8" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/><rect x="22" y="8" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/><rect x="8" y="22" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/><rect x="22" y="22" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/></svg></div>
+          <div class="exp-company">CloudJunction</div>
+        </div>
+        <div class="exp-location">Toronto, Canada · 2022</div>
+      </div>
+      <div class="exp-content reveal">
+        <div class="exp-role">
+          <div class="role-title">Project Manager (Contractual)</div>
+          <span class="role-period">June – Sep 2022</span>
+          <ul class="role-bullets">
+            <li>Managed 16 SME clients and cut project cycle time by 30% QoQ through automation.</li>
+            <li>Improved client sentiment by communicating progress and risk clearly to C-level stakeholders.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-meta reveal">
+        <div class="exp-identity">
+          <div class="exp-logo" style="font-size: 11px; font-weight: 700;">ICI</div>
+          <div class="exp-company">ICI Pakistan</div>
+        </div>
+        <div class="exp-location">Karachi, PK · 2022</div>
+      </div>
+      <div class="exp-content reveal">
+        <div class="exp-role">
+          <div class="role-title">Data & Insight Trainee</div>
+          <span class="role-period">Jan – June 2022</span>
+          <ul class="role-bullets">
+            <li>Devised GTM strategy for a new Polyurethane product line targeting tire manufacturers — projected 13% YoY growth.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROOF OF WORK -->
+  <section id="proof">
+    <div class="section-label reveal">Proof of Work</div>
+    <h2 class="section-title reveal">Numbers that<br /><em>don't lie.</em></h2>
+    <p class="section-intro reveal">Real outcomes from real work. No fluff — just what happened when I showed up.</p>
+    <div class="proof-grid">
+      <div class="proof-card reveal">
+        <div class="proof-number">01</div>
+        <div class="proof-metric">$53K → $3.47M ARR</div>
+        <p class="proof-desc">Built a complete upsell engine from zero — playbooks, campaigns, 10 AMs — driving 6,400% ARR growth YTD.</p>
+        <div class="proof-company">AutoLeap · Revenue Operations</div>
+      </div>
+      <div class="proof-card reveal">
+        <div class="proof-number">02</div>
+        <div class="proof-metric">+30% Sit Rate</div>
+        <p class="proof-desc">Designed a lead-scoring model that meaningfully improved how sales teams prioritized and converted leads.</p>
+        <div class="proof-company">AutoLeap · Data Specialist II</div>
+      </div>
+      <div class="proof-card reveal">
+        <div class="proof-number">03</div>
+        <div class="proof-metric">2,000+ Customers Migrated</div>
+        <p class="proof-desc">Python & SQL pipeline — 25% faster runtime, 1.5% MoM churn held throughout the entire migration.</p>
+        <div class="proof-company">AutoLeap · Data Specialist</div>
+      </div>
+      <div class="proof-card reveal">
+        <div class="proof-number">04</div>
+        <div class="proof-metric">30% Cycle Time Cut</div>
+        <p class="proof-desc">Managed 16 SME clients and reduced project delivery cycle time by 30% QoQ through process automation.</p>
+        <div class="proof-company">CloudJunction · Project Manager</div>
+      </div>
+      <div class="proof-card reveal">
+        <div class="proof-number">05</div>
+        <div class="proof-metric">60+ Decks, 7 Theses</div>
+        <p class="proof-desc">Reviewed 60+ startup decks, wrote 7 investment theses, participated in 7+ committees across five verticals.</p>
+        <div class="proof-company">Included VC · Global Fellow (&lt;1% acceptance)</div>
+      </div>
+      <div class="proof-card reveal">
+        <div class="proof-number">06</div>
+        <div class="proof-metric">450+ Women in Tech</div>
+        <p class="proof-desc">Taught 15+ cohorts data science skills, sponsored by Morgan Stanley, Cognizant, and Capgemini. Because representation matters.</p>
+        <div class="proof-company">Code First Girls · Data Science Instructor</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WRITING -->
+  <section id="writing">
+    <div class="section-label reveal">Writing & Artifacts</div>
+    <h2 class="section-title reveal">Things I've<br /><em>put into words.</em></h2>
+    <p class="section-intro reveal">Essays, analyses, and thinking shared publicly. Replace the placeholders with your Medium posts, LinkedIn articles, or any other work.</p>
+    <div class="artifacts-grid">
+      <a class="artifact-card reveal" href="https://medium.com/@zarmeenlakhani" target="_blank">
+        <div class="artifact-source"><span class="artifact-source-dot"></span>Medium</div>
+        <div class="artifact-title">Add your first article title here</div>
+        <div class="artifact-desc">Replace this with a one-line description of what the piece is about.</div>
+        <div class="artifact-link">Read on Medium <span class="artifact-link-arrow">↗</span></div>
+      </a>
+      <a class="artifact-card reveal" href="https://medium.com/@zarmeenlakhani" target="_blank">
+        <div class="artifact-source"><span class="artifact-source-dot"></span>Medium</div>
+        <div class="artifact-title">Add your second article title here</div>
+        <div class="artifact-desc">Replace this with a one-line description of what the piece is about.</div>
+        <div class="artifact-link">Read on Medium <span class="artifact-link-arrow">↗</span></div>
+      </a>
+      <a class="artifact-card reveal" href="#" target="_blank">
+        <div class="artifact-source"><span class="artifact-source-dot"></span>LinkedIn</div>
+        <div class="artifact-title">Add a LinkedIn article or post here</div>
+        <div class="artifact-desc">A thought leadership post, career reflection, or analysis you've shared.</div>
+        <div class="artifact-link">Read on LinkedIn <span class="artifact-link-arrow">↗</span></div>
+      </a>
+      <div class="artifact-add reveal">
+        <div class="artifact-add-icon">+</div>
+        <div class="artifact-add-text">More writing coming soon.<br />Swap this card with your next piece.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label reveal">Skills</div>
+    <h2 class="section-title reveal">The toolkit.</h2>
+    <p class="section-intro reveal">Built across startups, VC, and global markets.</p>
+    <div class="skills-grid">
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Data & Analytics</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span><span class="skill-tag">SQL</span>
+          <span class="skill-tag">PowerBI</span><span class="skill-tag">Redash</span>
+          <span class="skill-tag">Data Pipelines</span><span class="skill-tag">Lead Scoring</span>
+          <span class="skill-tag">Segmentation</span>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Revenue & Operations</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Revenue Ops</span><span class="skill-tag">Go-To-Market</span>
+          <span class="skill-tag">Upsell Engines</span><span class="skill-tag">CRM</span>
+          <span class="skill-tag">Campaign Mgmt</span><span class="skill-tag">Retention</span>
+          <span class="skill-tag">Team Leadership</span>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Ventures & Strategy</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Investment Thesis</span><span class="skill-tag">Market Analysis</span>
+          <span class="skill-tag">VC Due Diligence</span><span class="skill-tag">GTM Strategy</span>
+          <span class="skill-tag">Stakeholder Comms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHING -->
+  <section id="teaching">
+    <div class="section-label reveal">Beyond the Resume</div>
+    <h2 class="section-title reveal">Teaching &<br /><em>giving back.</em></h2>
+    <p class="section-intro reveal">What I do with the skills I've built, for the people who deserve the same shot.</p>
+    <div class="other-grid">
+      <div class="other-card reveal">
+        <div class="other-org">Code First Girls</div>
+        <div class="other-role">Data Science Instructor · London, UK</div>
+        <p class="other-desc">Taught 15+ cohorts — 450+ women — technical data skills. Sponsored by Morgan Stanley, Cognizant, and Capgemini. Sept 2022 – 2024.</p>
+      </div>
+      <div class="other-card reveal">
+        <div class="other-org">Girls Develop It</div>
+        <div class="other-role">Tech Instructor · New York, US</div>
+        <p class="other-desc">Led remote technical training at Deloitte US using business-focused projects to drive workforce digitalization. March 2024.</p>
+      </div>
+      <div class="other-card reveal">
+        <div class="other-org">IBA Karachi</div>
+        <div class="other-role">Teaching Assistant · 2020 – 2022</div>
+        <p class="other-desc">Graduate & undergraduate TA for Business Stats, Data Manipulation & Visualization, and Financial Institutions & Markets.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-label reveal">Education</div>
+    <h2 class="section-title reveal">Where it<br /><em>started.</em></h2>
+    <div class="education-block reveal">
+      <div>
+        <div class="edu-school">Institute of Business Administration</div>
+        <div class="edu-degree">Bachelor of Business Administration · School of Business Studies · Karachi, PK</div>
+        <div class="edu-period">August 2018 – May 2022</div>
+      </div>
+      <div class="edu-achievements">
+        <div class="edu-achievement">GPA 3.5 / 4.00 — Dean's List, top 10% of graduating batch</div>
+        <div class="edu-achievement">Runner-up, Case Study Breakthrough Challenge — Employer Federation Pakistan</div>
+        <div class="edu-achievement">Winner, All Karachi Women Football Championship</div>
+        <div class="edu-achievement">Runner-up, IBA Chess Olympiad</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label reveal">Contact</div>
+    <div class="contact-wrapper">
+      <div class="contact-left">
+        <h2 class="section-title reveal">Let's build<br /><em>something.</em></h2>
+        <p class="contact-note reveal">Open to roles in Revenue Operations, Data Strategy, and Growth. Based in Karachi — open to global and remote work.</p>
+      </div>
+      <div class="contact-right reveal">
+        <div class="contact-links">
+          <a href="mailto:zarmeenlakhani.io@gmail.com" class="contact-link">zarmeenlakhani.io@gmail.com <span class="contact-link-arrow">↗</span></a>
+          <a href="https://www.linkedin.com/in/zarmeen-lakhani/" target="_blank" class="contact-link">linkedin.com/in/zarmeen-lakhani <span class="contact-link-arrow">↗</span></a>
+          <a href="https://medium.com/@zarmeenlakhani" target="_blank" class="contact-link">medium.com/@zarmeenlakhani <span class="contact-link-arrow">↗</span></a>
+          <a href="http://wa.me/923353619676" target="_blank" class="contact-link">WhatsApp · (+92) 335-3619676 <span class="contact-link-arrow">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Zarmeen Lakhani</span>
+    <span class="footer-quote">"Find the lever that moves the number."</span>
+    <span style="color: #1a1a1a;">zarmeenlakhani.github.io</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 65);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
